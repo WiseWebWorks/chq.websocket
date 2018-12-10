@@ -1,0 +1,90 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: 'Arial, Helvetica', sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(50,50,50);
+}
+
+.card {
+  padding: 1em;
+  border-radius: 1em;
+  background-color: rgba(0,0,0,0.4);
+  color: white;
+}
+
+#gameCanvas {
+  width: 100vw;
+  height: 100vh;
+}
+
+.wasd-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+}
+
+.key-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.key {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1em;
+  height: 1em;
+  padding: 1em;
+  margin: 0.1em;
+  border-radius: 0.5em;
+  background-color: black;
+  color: white;
+}
+
+.pressed {
+  background-color: white;
+  color: black;
+}
+
+.chat-stuff {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 1em;
+  bottom: 1em;
+}
+
+.chats {
+  width: 300px;
+  height: 150px;
+  margin-bottom: 1em;
+  overflow-y: scroll;
+}
+
+button, input {
+  padding: 1em;
+  border-radius: 1em;
+}
+
+input {
+  width: 20em;
+}

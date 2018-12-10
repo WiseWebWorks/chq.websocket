@@ -1,0 +1,14 @@
+{
+  "name": "web-sockets-training",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "server": "node server.js"
+  },
+  "author": "Jordan Reed",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^6.1.2"
+  }
+}
