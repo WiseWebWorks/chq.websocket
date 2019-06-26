@@ -53,7 +53,7 @@
     const canvas = document.querySelector('#gameCanvas');
     const context = canvas.getContext('2d');
     const username = new URLSearchParams(document.location.search).get('username');
-    const serverAddress = `ws://172.16.0.58:7777?id=${username}`;
+    const serverAddress = `ws://10.5.1.150:7777?id=${username}`;
 
     //
     // TODO: initialize websocket here
