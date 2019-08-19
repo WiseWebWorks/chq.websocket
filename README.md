@@ -5,7 +5,7 @@ Open index.html (or complete.html for the finished version) directly in the brow
 
 # server
 ### setup
-npm install
+yarn
 
 ### running
-npm run server
+yarn server

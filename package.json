@@ -1,14 +1,20 @@
 {
-  "name": "web-sockets-training",
+  "name": "command-hq",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "server": "node server.js"
   },
-  "author": "Jordan Reed",
+  "author": "Kevin Wise",
   "license": "MIT",
   "dependencies": {
     "ws": "^6.1.2"
+  },
+  "devDependencies": {
+    "@infusionsoft/eslint-config": "^1.3.4",
+    "@vue/eslint-config-airbnb": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0"
   }
 }

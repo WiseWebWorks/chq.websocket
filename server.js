@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 const url = require('url');
 
 const port = 7777;
-const server = new WebSocket.Server({ port });
+const server = new WebSocket.Server({port});
 console.log(`listening on port ${port}`);
 
 const broadcast = (str) => {
@@ -15,7 +15,7 @@ const broadcast = (str) => {
 
 const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
 
 class vec2 {
   constructor(x, y) {
@@ -136,5 +136,5 @@ server.on('connection', (ws, request) => {
     }));
   });
 
-  ws.send(JSON.stringify({ message: 'connected' }));
+  ws.send(JSON.stringify({message: 'connected'}));
 });

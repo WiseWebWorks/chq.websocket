@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Websockets</title>
   <meta charset="utf-8">
@@ -9,161 +9,183 @@
 </head>
 
 <body>
-  <div class="app">
-    <canvas id="gameCanvas"></canvas>
+<div class="app">
+  <canvas id="gameCanvas"></canvas>
 
-    <div class="chat-stuff">
-      <div class="chats card"></div>
-      <form autocomplete="off" action="#" onsubmit="sendChat(); return false;">
-        <input id="chatInput" placeholder="chat" />
-        <button type="submit">Send Chat</button>
-      </form>
-    </div>
-
-    <div class="wasd-container card">
-      <div id="direction">---</div>
-      <br />
-      <div class="key-row">
-          <div id="key38" class="key">↑</div>
-      </div>
-      <div class="key-row">
-          <div id="key37" class="key">←</div>
-          <div id="key40" class="key">↓</div>
-          <div id="key39" class="key">→</div>
-      </div>
-    </div>
+  <div class="chat-stuff">
+    <div class="chats card"></div>
+    <form autocomplete="off" action="#" onsubmit="sendChat(); return false;">
+      <input id="chatInput" placeholder="chat"/>
+      <button type="submit">Send Chat</button>
+    </form>
   </div>
 
-  <script>
-    const Keys = {
-      LEFT: 37,
-      UP: 38,
-      RIGHT: 39,
-      DOWN: 40
-    };
+  <div class="wasd-container card">
+    <div id="direction">---</div>
+    <br/>
+    <div class="key-row">
+      <div id="key38" class="key">↑</div>
+    </div>
+    <div class="key-row">
+      <div id="key37" class="key">←</div>
+      <div id="key40" class="key">↓</div>
+      <div id="key39" class="key">→</div>
+    </div>
+  </div>
+</div>
 
-    const dir = { x: 0, y: 0 };
-    const images = {};
-    const keysPressed = {};
-    const keyElements = {};
-    Object.values(Keys).forEach(keyCode => keyElements[keyCode] = document.querySelector(`#key${keyCode}`));
-    const directionElement = document.querySelector('#direction');
-    const chatInput = document.querySelector('#chatInput');
-    const chatsBox = document.querySelector('.chats');
-    const canvas = document.querySelector('#gameCanvas');
-    const context = canvas.getContext('2d');
-    const username = new URLSearchParams(document.location.search).get('username');
-    const serverAddress = `ws://10.5.1.150:7777?id=${username}`;
+<script>
+  const Keys = {
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40
+  };
 
-    //
-    // TODO: initialize websocket here
-    //
-    // const ws = null;
-    // ws.onopen = () => {};
+  const dir = {x: 0, y: 0};
+  const images = {};
+  const keysPressed = {};
+  const keyElements = {};
+  Object.values(Keys).forEach(keyCode => keyElements[keyCode] = document.querySelector(`#key${keyCode}`));
+  const directionElement = document.querySelector('#direction');
+  const chatInput = document.querySelector('#chatInput');
+  const chatsBox = document.querySelector('.chats');
+  const canvas = document.querySelector('#gameCanvas');
+  const context = canvas.getContext('2d');
+  const username = new URLSearchParams(document.location.search).get('username');
+  const serverAddress = `ws://192.168.1.53:7777?id=${username}`;
 
-    window.onresize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    window.onresize();
+  const ws = new WebSocket(serverAddress);
+  ws.onopen = () => {
+    console.log('websocket connection opened');
+  };
 
-    const getImage = (githubId) => {
-      let image = images[githubId];
+  const resizeCanvas = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+  window.onresize = resizeCanvas;
+  resizeCanvas();
 
-      if (!image) {
-        image = new Image();
-        image.src = `https://github.com/${githubId}.png`;
-        images[githubId] = image;
-      }
+  const getImage = (githubId) => {
+    let image = images[githubId];
 
-      return image;
-    };
-
-    const render = (players) => {
-      context.fillStyle = 'rgb(50,50,50)';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-
-      Object.values(players).forEach(player => {
-        if (!player || !player.id || isNaN(player.x) || isNaN(player.y)) {
-          return;
-        }
-        const { id, x, y } = player;
-        const size = 100;
-        const flippedY = (canvas.height - y);
-        const newY = flippedY - (size / 2);
-        const newX = x - (size / 2);
-        const image = getImage(id);
-
-        context.save();
-        context.beginPath();
-        context.arc(x, flippedY, size / 2, 0, Math.PI * 2, false);
-        context.clip();
-        context.stroke();
-        context.closePath();
-        context.drawImage(image, newX, newY, size, size);
-        context.restore();
-
-        context.font = '1em Arial';
-        context.textAlign = 'center';
-        context.fillStyle = 'gray';
-        context.fillText(id, x, flippedY + size * 0.7);
-      });
-    };
-
-    const sendChat = () => {
-      //
-      // TODO: send the chatInput's value as a message of type 'chat'
-      //
-      // ws.send();
-
-      chatInput.value = '';
-    };
-
-    const chatReceived = (text) => {
-      const chat = document.createElement('p');
-      chat.innerText = text;
-      chatsBox.append(chat);
-      chatsBox.scrollTop = chatsBox.scrollHeight;
-    };
-
-    //
-    // TODO: write on message handler and update the ui with data from the server
-    //
-    // ws.onmessage = (event) => {};
-
-    const updateDirection = () => {
-      dir.x = 0;
-      dir.y = 0;
-      if (keysPressed[Keys.LEFT ]) dir.x -= 1;
-      if (keysPressed[Keys.RIGHT]) dir.x += 1;
-      if (keysPressed[Keys.DOWN ]) dir.y -= 1;
-      if (keysPressed[Keys.UP   ]) dir.y += 1;
-      directionElement.innerText = `Direction: (${dir.x.toFixed(1)}, ${dir.y.toFixed(1)})`;
-
-      //
-      // TODO: update server with new direction
-      //
-      // ws.send();
-    };
-
-    const keyDown = (event) => {
-      keysPressed[event.which] = true;
-      if (keyElements[event.which]) {
-        keyElements[event.which].classList.add('pressed');
-        updateDirection();
-      }
-    };
-
-    const keyUp = (event) => {
-      keysPressed[event.which] = false;
-      if (keyElements[event.which]) {
-        keyElements[event.which].classList.remove('pressed');
-        updateDirection();
-      }
+    if (!image) {
+      image = new Image();
+      image.src = `https://github.com/${githubId}.png`;
+      images[githubId] = image;
     }
 
-    window.addEventListener('keydown', keyDown);
-    window.addEventListener('keyup', keyUp);
-  </script>
+    return image;
+  };
+
+  const render = (players) => {
+    context.fillStyle = 'rgb(50,50,50)';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    Object.values(players).forEach(player => {
+      if (!player || !player.id || isNaN(player.x) || isNaN(player.y)) {
+        return;
+      }
+      const {id, x, y} = player;
+      const size = 100;
+      const flippedY = (canvas.height - y);
+      const newY = flippedY - (size / 2);
+      const newX = x - (size / 2);
+      const image = getImage(id);
+
+      context.save();
+      context.beginPath();
+      context.arc(x, flippedY, size / 2, 0, Math.PI * 2, false);
+      context.clip();
+      context.stroke();
+      context.closePath();
+      context.drawImage(image, newX, newY, size, size);
+      context.restore();
+
+      context.font = '1em Arial';
+      context.textAlign = 'center';
+      context.fillStyle = 'gray';
+      context.fillText(id, x, flippedY + size * 0.7);
+    });
+  };
+
+  const sendChat = () => {
+    ws.send(JSON.stringify({
+      type: 'chat',
+      data: chatInput.value,
+    }));
+
+    chatInput.value = '';
+  };
+
+  const chatReceived = (text) => {
+    const chat = document.createElement('p');
+    chat.innerText = text;
+    chatsBox.append(chat);
+    chatsBox.scrollTop = chatsBox.scrollHeight;
+  };
+
+  ws.onmessage = (event) => {
+    let message;
+    try {
+      message = JSON.parse(event.data);
+    } catch (error) {
+      console.log('message doesn\'t appear to be JSON', error);
+      return;
+    }
+
+    switch (message.type) {
+      case 'chat':
+        chatReceived(message.data);
+        break;
+      case 'update':
+        render(message.data);
+        break;
+    }
+  };
+
+  const updateDirection = () => {
+    dir.x = 0;
+    dir.y = 0;
+    if (keysPressed[Keys.LEFT]) {
+      dir.x -= 1;
+    }
+    if (keysPressed[Keys.RIGHT]) {
+      dir.x += 1;
+    }
+    if (keysPressed[Keys.DOWN]) {
+      dir.y -= 1;
+    }
+    if (keysPressed[Keys.UP]) {
+      dir.y += 1;
+    }
+    directionElement.innerText = `Direction: (${dir.x.toFixed(1)}, ${dir.y.toFixed(1)})`;
+
+    ws.send(JSON.stringify({
+      type: 'input',
+      data: dir,
+    }));
+  };
+
+  const keyDown = (event) => {
+    keysPressed[event.which] = true;
+    if (keyElements[event.which]) {
+      keyElements[event.which].classList.add('pressed');
+      updateDirection();
+    }
+  };
+
+  const keyUp = (event) => {
+    keysPressed[event.which] = false;
+    if (keyElements[event.which]) {
+      keyElements[event.which].classList.remove('pressed');
+      updateDirection();
+    }
+  };
+
+  window.addEventListener('keydown', keyDown);
+  window.addEventListener('keyup', keyUp);
+</script>
 </body>
 </html>
